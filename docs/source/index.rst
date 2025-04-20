@@ -1,3 +1,8 @@
+.. Core Utilities documentation master file, created by
+   sphinx-quickstart
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
 PopOS Configuration for Jon Webb!
 =================================
 My name is Jon Webb and I am an engineer and scientist that specializes
@@ -16,11 +21,26 @@ encrypted hard drive.  While this document describes the process for
 installing Arch Linux, it also has several instructions that are useful
 for someone using another Linux distrubition or a Macintosh computer system
 
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   PopOS <Pop>
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+
 Installation
 ============
-This package can be downloaded with the following command. **NOTE:** You will 
-not need to clone this repository until you get to the ``Post Pop Install``
-section of the installation process.
+This package can be downloaded with the following command.
+
+**NOTE:** The repository does not need to be cloned until the Post Arch 
+Install section of this document.
 
 .. code-block:: bash
 
@@ -30,10 +50,3 @@ section of the installation process.
 License
 =======
 This project uses a basic MIT license
-
-Documentation
-=============
-The data in this repository can be used in conjunction with the 
-XXX
-documentation to build your own Arch Linux based operating system.
-
