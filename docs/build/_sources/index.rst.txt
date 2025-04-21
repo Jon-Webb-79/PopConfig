@@ -27,6 +27,8 @@ for someone using another Linux distrubition or a Macintosh computer system
    :caption: Contents:
 
    PopOS <Pop>
+   Configure Gnome <Gnome>
+   Post Pop Install <Post>
 
 Indices and tables
 ==================
