@@ -19,6 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Troubleshooting" href="Trouble.html" />
     <link rel="prev" title="Configure the Gnome Desktop" href="Gnome.html" /> 
 </head>
 
@@ -65,8 +66,12 @@
 <li class="toctree-l3"><a class="reference internal" href="#set-up-ide">Set up IDE</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#install-pdflatex">Install pdfLaTeX</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-misc-packages">Install Misc Packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#system-backup">System Backup</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="Trouble.html">Trouble Shoot</a></li>
 </ul>
 
         </div>
@@ -436,6 +441,56 @@ with header information.  Similar commands exist for the C and C++ programming
 languages.</p>
 </section>
 </section>
+<section id="install-pdflatex">
+<h2>Install pdfLaTeX<a class="headerlink" href="#install-pdflatex" title="Link to this heading"></a></h2>
+<p>LaTeX is one of the best word processors for well formatted documents.  LaTeX
+can be installed with the following set of commands.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>texlive-latex-base
+sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>texlive-fonts-recommended
+sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>texlive-fonts-extra
+</pre></div>
+</div>
+</section>
+<section id="install-misc-packages">
+<h2>Install Misc Packages<a class="headerlink" href="#install-misc-packages" title="Link to this heading"></a></h2>
+<p>The following commands can be used to install misc packages for use in PopOS.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>notepadqq
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>tree
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>htop
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>rsync
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>fail2ban
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>xclip
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>libreoffice
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>neofetch
+</pre></div>
+</div>
+<p>We also need to install a free PDF Editor with the following instructions.
+First, navigate to the <a class="reference external" href="https://code-industry.net/masterpdfeditor/">Master PDF Editor</a>
+web site.  Next download the debian version of MasterPDFEditor.  Finally open the terminal
+and navigate to the <code class="docutils literal notranslate"><span class="pre">Downloads</span></code> directory.  Once in the <code class="docutils literal notranslate"><span class="pre">Downloads</span></code> directory
+enter the following command into the terminal, where <code class="docutils literal notranslate"><span class="pre">package_name</span></code> represents
+the name of the recently downloaded MastPDFEditor package as shown in the <code class="docutils literal notranslate"><span class="pre">Downloads</span></code>
+directory.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>package_name
+</pre></div>
+</div>
+</section>
+<section id="system-backup">
+<h2>System Backup<a class="headerlink" href="#system-backup" title="Link to this heading"></a></h2>
+<p>The following command can be used to set up a system level backup utility
+that utilyzes the <code class="docutils literal notranslate"><span class="pre">rsync</span></code> utility.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>cp<span class="w"> </span>-r<span class="w"> </span>~/Code_Dev/OS/PopConfig<span class="w"> </span>/usr/local/bin/core_backup
+</pre></div>
+</div>
+<p>Once this file is moved to the <code class="docutils literal notranslate"><span class="pre">/usr/local/bin</span></code> directory you can initiate
+a system backup from the terminal with the following command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>core_backup
+</pre></div>
+</div>
+<p>The above command will prompt the user to select the backup drive where they want to
+store their backup, but it must be a connected backup hard drive and does NOT
+conduct a backup to a networked location.</p>
+</section>
 </section>
 
 
@@ -443,6 +498,7 @@ languages.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="Gnome.html" class="btn btn-neutral float-left" title="Configure the Gnome Desktop" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Trouble.html" class="btn btn-neutral float-right" title="Troubleshooting" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

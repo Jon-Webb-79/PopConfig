@@ -423,3 +423,61 @@ In addition, the IDE for that directory can be reopened with the command
 There are also commands to create python files and test files that are pre-populated 
 with header information.  Similar commands exist for the C and C++ programming 
 languages.
+
+Install pdfLaTeX 
+================
+LaTeX is one of the best word processors for well formatted documents.  LaTeX 
+can be installed with the following set of commands.
+
+.. code-block:: bash 
+
+   sudo apt-get install texlive-latex-base 
+   sudo apt-get install texlive-fonts-recommended 
+   sudo apt-get install texlive-fonts-extra 
+
+Install Misc Packages 
+=====================
+The following commands can be used to install misc packages for use in PopOS.
+
+.. code-block:: bash 
+
+   sudo apt install notepadqq
+   sudo apt install tree
+   sudo apt install htop
+   sudo apt install rsync
+   sudo apt install fail2ban
+   sudo apt install xclip
+   sudo apt install libreoffice
+   sudo apt install neofetch
+
+We also need to install a free PDF Editor with the following instructions.
+First, navigate to the `Master PDF Editor <https://code-industry.net/masterpdfeditor/>`_
+web site.  Next download the debian version of MasterPDFEditor.  Finally open the terminal 
+and navigate to the ``Downloads`` directory.  Once in the ``Downloads`` directory 
+enter the following command into the terminal, where ``package_name`` represents 
+the name of the recently downloaded MastPDFEditor package as shown in the ``Downloads`` 
+directory.
+
+.. code-block:: bash 
+
+   sudo apt install package_name
+
+System Backup 
+=============
+The following command can be used to set up a system level backup utility 
+that utilyzes the ``rsync`` utility.
+
+.. code-block:: bash 
+
+   sudo cp -r ~/Code_Dev/OS/PopConfig /usr/local/bin/core_backup 
+
+Once this file is moved to the ``/usr/local/bin`` directory you can initiate 
+a system backup from the terminal with the following command.
+
+.. code-block:: bash 
+
+   core_backup 
+
+The above command will prompt the user to select the backup drive where they want to 
+store their backup, but it must be a connected backup hard drive and does NOT 
+conduct a backup to a networked location.

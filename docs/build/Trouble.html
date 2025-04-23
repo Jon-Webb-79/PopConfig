@@ -1,0 +1,534 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Troubleshooting &mdash; PopOS Installation and Configuration 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Post Installation Options" href="Post.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PopOS Installation and Configuration
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Pop.html">PopOS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Gnome.html">Configure Gnome</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Post.html">Post Pop Install</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Trouble Shoot</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#cron-tab">Cron Tab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fail2ban-configuration">Fail2Ban Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#rsync">rsync</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ssh-configuration">SSH Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#client-side">Client Side</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#server-side">Server Side</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#usb">USB</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#determine-mount-location">Determine Mount Location</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rename-the-drive">Rename the Drive</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PopOS Installation and Configuration</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Troubleshooting</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Trouble.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="troubleshooting">
+<h1>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h1>
+<p>This Section of the document will describe how to use and troubleshoot
+several utility applications that are available on PopOS.</p>
+<section id="cron-tab">
+<h2>Cron Tab<a class="headerlink" href="#cron-tab" title="Link to this heading"></a></h2>
+<p>The Cron tab can be used to schedule actions on your computer.  More information
+can be found on the cron tab from the
+<a class="reference external" href="https://wiki.archlinux.org/title/cron">Arch Linux Cron Wiki</a>.
+First we need to see if Cron is installed with the following command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>which<span class="w"> </span>cron
+</pre></div>
+</div>
+<p>If the above command does not return anything, then we need to install
+cron with the following command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>update
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>cron
+</pre></div>
+</div>
+<p>The cron tab has the folllowing format.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Crontab file for jonwebb</span>
+<span class="c1"># https://www.youtube.com/watch?v=IPLFpqPAn5A for examples</span>
+<span class="c1"># https://www.youtube.com/watch?v=QZJ1drMQz1A for more examples</span>
+<span class="c1"># |-------------- minute (0 -59)</span>
+<span class="c1"># | |---------------- hour (0 -23)</span>
+<span class="c1"># | | |------------------ day of month (1 - 31)</span>
+<span class="c1"># | | | |-------------------- month (1 -12)</span>
+<span class="c1"># | | | | |---------------------- day of week (0 - 6) (Sunday to Saturday)</span>
+<span class="c1"># | | | | |                                           7 is also Sunday on some systems</span>
+<span class="c1"># | | | | |</span>
+<span class="c1"># | | | | |</span>
+<span class="c1"># * * * * *</span>
+</pre></div>
+</div>
+<p>The cron files are stored in <code class="docutils literal notranslate"><span class="pre">/var/spool/username</span></code>.  The root cron files
+are stored in <code class="docutils literal notranslate"><span class="pre">/etc/cron.d</span></code>.</p>
+<p>Cron can be set up to instantiate every time your computer starts with the
+following commands.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span>start<span class="w"> </span>cron
+sudo<span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>cron
+</pre></div>
+</div>
+<p>You can check the status of <code class="docutils literal notranslate"><span class="pre">cron</span></code> with the following command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span>status<span class="w"> </span>cron
+</pre></div>
+</div>
+<p>The current cron jobs can also be listed with the following command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>crontab<span class="w"> </span>-l
+</pre></div>
+</div>
+</section>
+<section id="fail2ban-configuration">
+<h2>Fail2Ban Configuration<a class="headerlink" href="#fail2ban-configuration" title="Link to this heading"></a></h2>
+<p>Fail2ban is a utility that helps manage the security of our system.  More
+information on Fail2ban can be found at the
+<a class="reference external" href="https://wiki.archlinux.org/title/fail2ban">Arch Linux Fail2Ban Wiki</a>
+#. First check to see if fail2ban is already installed</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>which<span class="w"> </span>fail2ban
+</pre></div>
+</div>
+<p>If the response to the above command returns nothing, then fail2ban is not installed.
+The command to install fail2ban is shown below;</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>fail2ban
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic">
+<li><p>Transition to root user</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>su
+</pre></div>
+</div>
+<p>Enter your root password when prompted.</p>
+</li>
+<li><p>Edit the fail2ban file</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/etc
+nvim<span class="w"> </span>fail2ban/fail2ban.conf
+</pre></div>
+</div>
+</li>
+<li><p>Set <code class="docutils literal notranslate"><span class="pre">dpurge</span></code> to <code class="docutils literal notranslate"><span class="pre">7d</span></code>, which will purge the banned list once every 7 days.</p></li>
+<li><p>Close and save the <code class="docutils literal notranslate"><span class="pre">fail2ban.conf</span></code> file.</p></li>
+<li><p>Copy the <code class="docutils literal notranslate"><span class="pre">fail2ban.conf</span></code> file to <code class="docutils literal notranslate"><span class="pre">fail2ban.local</span></code></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>fail2ban/fail2ban.conf<span class="w"> </span>fail2ban/fail2ban.local
+</pre></div>
+</div>
+</li>
+<li><p>Configure <code class="docutils literal notranslate"><span class="pre">jail.conf</span></code></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nvim<span class="w"> </span>/fail2ban/jail
+</pre></div>
+</div>
+<p>Find <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">ignoreip</span></code> and uncomment it.  Write the ip address of any addresses
+that you do not want banned for incorrectly logging in.</p>
+<p>Set <code class="docutils literal notranslate"><span class="pre">findtime</span></code> to <code class="docutils literal notranslate"><span class="pre">7m</span></code>
+Set <code class="docutils literal notranslate"><span class="pre">maxretry</span></code> to <code class="docutils literal notranslate"><span class="pre">3</span></code>
+Set <code class="docutils literal notranslate"><span class="pre">bantime</span></code> to <code class="docutils literal notranslate"><span class="pre">1h</span></code>
+Set <code class="docutils literal notranslate"><span class="pre">send</span> <span class="pre">and</span> <span class="pre">recieve</span> <span class="pre">e-mails</span></code> to your preferred e-mail address for notifications
+Enable all relevant attack vectors</p>
+</li>
+<li><p>Close the <code class="docutils literal notranslate"><span class="pre">jail.conf</span></code> file.</p></li>
+<li><p>Copy <code class="docutils literal notranslate"><span class="pre">jail.conf</span></code> to <code class="docutils literal notranslate"><span class="pre">jail.local</span></code></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>fail2ban/jail.conf<span class="w"> </span>fail2ban/jail.local
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="rsync">
+<h2>rsync<a class="headerlink" href="#rsync" title="Link to this heading"></a></h2>
+<p>Rsync is a utility that allows a user to transfer information from one
+hard drive to another.  This is useful for conducting backups and for
+transmitting information over an ssh socket.  More information on the
+rsync utility can be found at the
+<a class="reference external" href="https://wiki.archlinux.org/title/rsync">Arch Linux rsync Wiki</a></p>
+<ol class="arabic">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">rsync</span></code> is not installed, install it with the following command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>rsync
+</pre></div>
+</div>
+</li>
+<li><p>The rest of this section will be predicated on the process of backing
+up the home directory to a thumb drive.  For the sake of this section
+assume the backup drive is located at <code class="docutils literal notranslate"><span class="pre">/run/media/username/drive_1</span></code>.</p></li>
+<li><p>The first time backing up the home directory, use the following command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rsync<span class="w"> </span>-arvn<span class="w"> </span>--dry-run<span class="w"> </span>home/<span class="w"> </span>/run/media/username/drive_1
+</pre></div>
+</div>
+<p>The above command will only test to ensure that you are backing up the right
+information, but will not back it up.</p>
+</li>
+<li><p>Assuming the above command was successful then proceed with the following
+command</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rsync<span class="w"> </span>-arv<span class="w"> </span>/home/username<span class="w"> </span>/run/media/username/drive_1
+</pre></div>
+</div>
+<p>Every time after this, run</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rsync<span class="w"> </span>-arv<span class="w"> </span>--delete<span class="w"> </span>/home/username/<span class="w"> </span>/run/media/username/drive_1
+</pre></div>
+</div>
+<p>The above command will delete files on the tumb drive, which were in a
+previous backup, but deleted from the primary server since the last
+backup.</p>
+</li>
+</ol>
+</section>
+<section id="ssh-configuration">
+<h2>SSH Configuration<a class="headerlink" href="#ssh-configuration" title="Link to this heading"></a></h2>
+<p>SSH is a utility that allows us to log into one computer or server from
+another computer or server. This section will walk a reader through the
+process of configuring ssh on the client and server side.  More information
+can be found on the
+<a class="reference external" href="https://wiki.archlinux.org/title/OpenSSH">Arch Linux ssh Wiki</a></p>
+<section id="client-side">
+<h3>Client Side<a class="headerlink" href="#client-side" title="Link to this heading"></a></h3>
+<ol class="arabic">
+<li><p>Verify that openssh is installed</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>which<span class="w"> </span>ssh
+</pre></div>
+</div>
+<p>if the above command returns nothing, then openssh is not installed and needs
+to be installed</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>openssh-server
+</pre></div>
+</div>
+</li>
+<li><p>Verify that you can ssh into the server of interest, then exit the server.
+This assumes that the reader knows the ip and port number of the server they
+are logging into.  In addition, the user can ommit the &lt; and &gt; symbols
+when they enter the appropriate information.  If you are trying to set up the
+ability to ssh into a fresh install, the port number is likely 22.  This
+command should prompt the user for a password given to them by the server
+administratory.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>-p<span class="w"> </span>&lt;portnumber&gt;<span class="w"> </span>&lt;username&gt;@&lt;ipaddress&gt;
+</pre></div>
+</div>
+<p>Assuming the reader was succesful in ssh’ing into the server, then exit the
+server by simultaneously pressing the Control and d keys.</p>
+</li>
+<li><p>Generate public/private key set if the server allows you to create one on
+your computer and send it to the server.</p>
+<ol class="arabic">
+<li><p>If a <code class="docutils literal notranslate"><span class="pre">.ssh</span></code> directory does not exist in your home directory, then create;</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>~/.ssh
+</pre></div>
+</div>
+</li>
+<li><p>Change to the <code class="docutils literal notranslate"><span class="pre">.ssh</span></code> directory.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/.ssh
+</pre></div>
+</div>
+</li>
+<li><p>Generate the ssh key with the following command.  They keytape can be
+<code class="docutils literal notranslate"><span class="pre">rsa</span></code>, <code class="docutils literal notranslate"><span class="pre">dsa</span></code>, <code class="docutils literal notranslate"><span class="pre">ecdsa</span></code>, or <code class="docutils literal notranslate"><span class="pre">ed25519</span></code>.  The defauly keytype is
+<code class="docutils literal notranslate"><span class="pre">rsa</span></code> but I prefer to use <code class="docutils literal notranslate"><span class="pre">ed25519</span></code>.  The description should be one word.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh-keygen<span class="w"> </span>-t<span class="w"> </span>&lt;keytype&gt;<span class="w"> </span>-C<span class="w"> </span>&lt;brief_description&gt;
+</pre></div>
+</div>
+</li>
+<li><p>Rename the key to something descriptive of its use.  Renaming should include
+the path length when prompted.</p></li>
+<li><p>Give the key a passphrase, preferable different than the password used in
+step 2.</p></li>
+<li><p>The completion of the above commands should generate a public <code class="docutils literal notranslate"><span class="pre">.pub</span></code>
+password file and a private password file.  Never expose the private key.</p></li>
+</ol>
+</li>
+<li><p>Send the publick key to the server</p>
+<ol class="arabic">
+<li><p>Send the key to the server</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh-copy-id<span class="w"> </span>-i<span class="w"> </span>~/.ssh/&lt;key_name.pub&gt;<span class="w"> </span>&lt;username&gt;@&lt;ipaddress&gt;
+</pre></div>
+</div>
+</li>
+<li><p>Enter the password</p></li>
+<li><p>Verify the key works</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>-p<span class="w"> </span>&lt;portnumber&gt;<span class="w"> </span>&lt;username&gt;@&lt;ipaddress&gt;
+</pre></div>
+</div>
+<p>In the server, ensure that you are in the <code class="docutils literal notranslate"><span class="pre">.ssh</span></code> directory and verify that
+the authorized key file contains your password.</p>
+</li>
+<li><p>Exit by depressing <code class="docutils literal notranslate"><span class="pre">Control-d</span></code></p></li>
+</ol>
+</li>
+<li><p>Associate the key on your computer with the server</p>
+<ol class="arabic">
+<li><p>Associate key</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>-i<span class="w"> </span>~/.ssh/&lt;private_key&gt;<span class="w"> </span>&lt;username&gt;@&lt;ipaddress&gt;
+</pre></div>
+</div>
+<p>This should require the passphrase to be entered, not the password</p>
+</li>
+<li><p>Connect</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>-p<span class="w"> </span>&lt;portnumber&gt;<span class="w"> </span>&lt;username&gt;@&lt;ipaddress&gt;
+</pre></div>
+</div>
+<p>Type the passphrase, not the password</p>
+</li>
+</ol>
+</li>
+<li><p>Configure the computer to remember the passphrase</p>
+<ol class="arabic">
+<li><p>Determine if the ssh-agent is turned on</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ps<span class="w"> </span>aux<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>ssh-agent
+</pre></div>
+</div>
+<p>If the output has th eword grep in it, it is not active.</p>
+</li>
+<li><p>Enable ssh-agent if it is not running.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">eval</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>ssh-agent<span class="k">)</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>Repeat step the previous to ensure ssh-agent is running.</p>
+</li>
+<li><p>Add key to ssh-agent</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh-add<span class="w"> </span>~/.ssh/&lt;private_key_name&gt;
+</pre></div>
+</div>
+<p>Enter the passphrase.  ssh into the client to see if it requests they
+passphrase.  If it asks for the passphrase then the reader made a mistake
+and should repreat the previous step.  Control-d to leave the server</p>
+</li>
+</ol>
+</li>
+<li><p>Set up the config file</p>
+<ol class="arabic">
+<li><p>cd into the .ssh directory</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/.ssh
+</pre></div>
+</div>
+</li>
+<li><p>Create a file titled <code class="docutils literal notranslate"><span class="pre">config</span></code></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nvim<span class="w"> </span>config
+</pre></div>
+</div>
+<p>Add the following information to the config file</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Host<span class="w"> </span>&lt;user_defined_short_name&gt;
+Hostname<span class="w"> </span>&lt;ip_address&gt;
+Port<span class="w"> </span>&lt;portnumber&gt;
+User<span class="w"> </span>&lt;username&gt;
+IdentityFile<span class="w"> </span>~/.ssh/&lt;private_key_name&gt;
+</pre></div>
+</div>
+</li>
+</ol>
+</li>
+<li><p>From now on you can log onto the server by typing</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>&lt;user_defined_short_name&gt;
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="server-side">
+<h3>Server Side<a class="headerlink" href="#server-side" title="Link to this heading"></a></h3>
+<ol class="arabic">
+<li><p>Verify that the server ssh client exists.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>which<span class="w"> </span>sshd
+</pre></div>
+</div>
+<p>If the server side client does not exist, then install it.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>ssh-server
+</pre></div>
+</div>
+</li>
+<li><p>Check the status of sshd</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl<span class="w"> </span>status<span class="w"> </span>sshd
+</pre></div>
+</div>
+</li>
+<li><p>If necessary we can restart, stop, or enable sshd</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl<span class="w"> </span>restart<span class="w"> </span>sshd
+systemctl<span class="w"> </span>stop<span class="w"> </span>sshd
+systemctl<span class="w"> </span>start<span class="w"> </span>sshd
+systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>sshd
+</pre></div>
+</div>
+</li>
+<li><p>Modify the <code class="docutils literal notranslate"><span class="pre">ssh_config</span></code> file.</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cd</span></code> to the appropriate directory</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/etc/ssh
+
+**WARNING**<span class="w"> </span>Do<span class="w"> </span>not<span class="w"> </span>delete<span class="w"> </span>any<span class="w"> </span>files<span class="w"> </span><span class="k">in</span><span class="w"> </span>this<span class="w"> </span>directory
+</pre></div>
+</div>
+<ol class="arabic simple">
+<li><p>Open the config file</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>nvim<span class="w"> </span>sshd_config
+</pre></div>
+</div>
+<ol class="arabic">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">Port</span></code> is set to 22, set it to any other larger number.  You will need
+to ensure this is reflected on the client side config file.</p></li>
+<li><p>Add specific users after the <code class="docutils literal notranslate"><span class="pre">Allowusers</span></code> keyword</p></li>
+<li><p>Reset <code class="docutils literal notranslate"><span class="pre">PermitRootLogin</span></code> from <code class="docutils literal notranslate"><span class="pre">prohibit-password</span></code> to <code class="docutils literal notranslate"><span class="pre">no</span></code>.</p>
+<p><strong>NOTE:</strong> Ensure there is a sshkey relationship between all clients before doing this.</p>
+</li>
+<li><p>Restart and re-enable the ssh server using the previous commands.</p></li>
+</ol>
+</li>
+<li><p>Lock down the server side files.</p>
+<ol class="arabic simple">
+<li><p>Lock down the <code class="docutils literal notranslate"><span class="pre">authorized_keys</span></code> file.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>chmod<span class="w"> </span><span class="m">400</span><span class="w"> </span>~/.ssh/authorized_keys
+</pre></div>
+</div>
+<ol class="arabic simple">
+<li><p>Set an immutable bit on the <code class="docutils literal notranslate"><span class="pre">authorized_keys</span></code> file.  This may require
+super user privileges</p></li>
+<li><p>chattr +i ~/.ssh/authorized_keys</p></li>
+<li><p>Repeat the previous step on the <code class="docutils literal notranslate"><span class="pre">.ssh</span></code> directory</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>chattr<span class="w"> </span>+i<span class="w"> </span>~/.ssh
+</pre></div>
+</div>
+<ol class="arabic simple">
+<li><p>Immutable bits can be un-set with the following commands</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>chatter<span class="w"> </span>-i<span class="w"> </span>~/.ssh/authorized_keys
+chattr<span class="w"> </span>-i<span class="w"> </span>~/.ssh
+</pre></div>
+</div>
+</li>
+<li><p>Login attempts can be viewed with the <code class="docutils literal notranslate"><span class="pre">journalctl</span></code> command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>journalctl<span class="w"> </span>--since<span class="w"> </span><span class="s2">&quot;5 min ago&quot;</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+</section>
+<section id="usb">
+<h2>USB<a class="headerlink" href="#usb" title="Link to this heading"></a></h2>
+<p>This section will describe how to locate and modify a drive connected
+via a USB port.</p>
+<section id="determine-mount-location">
+<h3>Determine Mount Location<a class="headerlink" href="#determine-mount-location" title="Link to this heading"></a></h3>
+<p>To determine where a drive is located, type the following command</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>df<span class="w"> </span>-l
+</pre></div>
+</div>
+<p>For this example lets assume the drive is located at <code class="docutils literal notranslate"><span class="pre">/dev/sda1</span></code>.  In
+order to unmount the drive type</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>umount<span class="w"> </span>/dev/sda1
+</pre></div>
+</div>
+<p>Also to format the drive to a Linux format if necessary type the following;</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>mkfs.ext4<span class="w"> </span>/dev/sda1
+</pre></div>
+</div>
+</section>
+<section id="rename-the-drive">
+<h3>Rename the Drive<a class="headerlink" href="#rename-the-drive" title="Link to this heading"></a></h3>
+<p>In order to rename a drive we need to ensure that <code class="docutils literal notranslate"><span class="pre">e2label</span></code> is installed.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>which<span class="w"> </span>e2label
+</pre></div>
+</div>
+<p>If it is not installed, then install <code class="docutils literal notranslate"><span class="pre">e2label</span></code></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>e2label
+</pre></div>
+</div>
+<p>Finally we can re-label the drive with the following command</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>e2label<span class="w"> </span>/dev/sda1<span class="w"> </span>user_defined_drive_name
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Post.html" class="btn btn-neutral float-left" title="Post Installation Options" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Jonathan A. Webb.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

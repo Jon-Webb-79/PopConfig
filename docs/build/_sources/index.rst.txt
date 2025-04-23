@@ -29,6 +29,7 @@ for someone using another Linux distrubition or a Macintosh computer system
    PopOS <Pop>
    Configure Gnome <Gnome>
    Post Pop Install <Post>
+   Trouble Shoot <Trouble>
 
 Indices and tables
 ==================
