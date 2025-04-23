@@ -58,6 +58,13 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#install-tmux">Install tmux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-software-development-environments">Install Software Development Environments</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#install-python">Install Python</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#install-poetry">Install Poetry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#install-c-and-c-compilers">Install C and C++ Compilers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#set-up-ide">Set up IDE</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -291,6 +298,143 @@ tmux<span class="w"> </span><span class="nb">source</span><span class="w"> </spa
 </div>
 <p>Next type <code class="docutils literal notranslate"><span class="pre">tmux</span></code> into your terminal to verify that tmux is working correctly.
 To exit type <code class="docutils literal notranslate"><span class="pre">tmux</span> <span class="pre">kill-session</span></code>.</p>
+</section>
+<section id="install-software-development-environments">
+<h2>Install Software Development Environments<a class="headerlink" href="#install-software-development-environments" title="Link to this heading"></a></h2>
+<p>This section describes the process for installing C, C++, and Python programming
+languages to include a tmux based integrated developer environment (IDE).</p>
+<section id="install-python">
+<h3>Install Python<a class="headerlink" href="#install-python" title="Link to this heading"></a></h3>
+<p>PopOS comes pre-installed with an older version of Python, and unfortunately the
+<code class="docutils literal notranslate"><span class="pre">apt</span></code> repository does not maintain up to date versions of Python.  For this
+reason we will use the dead snakes repository to install python.  If you have not
+yet installed deadsnakes enter the following commands into your terminal.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>software-properties-common
+sudo<span class="w"> </span>add-apt-repository<span class="w"> </span>ppa:deadsnakes/ppa
+sudo<span class="w"> </span>apt<span class="w"> </span>update
+</pre></div>
+</div>
+<p>Next lets verify the version of Python already installed with the following command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>--version
+</pre></div>
+</div>
+<p>Next lets check to see if the version we want to download is available with the
+following command where XX should be the version of python you are looking for.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-cache<span class="w"> </span>policy<span class="w"> </span>python3.XX
+</pre></div>
+</div>
+<p>If the version is available type the following command to download the required
+version.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>python<span class="w"> </span><span class="m">3</span>.XX
+</pre></div>
+</div>
+<p>At this point the required version of Python has been installed but it will not
+be listed if you type</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>--version
+</pre></div>
+</div>
+<p>and the following command will not be recognized at all</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>--version
+</pre></div>
+</div>
+<p>We will not configure the term <code class="docutils literal notranslate"><span class="pre">python</span></code> to be set to the downloaded version and
+<code class="docutils literal notranslate"><span class="pre">python3</span></code> will be set to the version that existed with the PopOS install.  In these
+commands <code class="docutils literal notranslate"><span class="pre">XX</span></code> represents the recently downloaded version and <code class="docutils literal notranslate"><span class="pre">YY</span></code> represents the
+initial version.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>update-alternatives<span class="w"> </span>--install<span class="w"> </span>/usr/bin/python<span class="w"> </span>python<span class="w"> </span>/usr/bin/python3.XX<span class="w"> </span><span class="m">1</span>
+sudo<span class="w"> </span>update-alternatives<span class="w"> </span>--install<span class="w"> </span>/usr/bin/python<span class="w"> </span>python<span class="w"> </span>/usr/bin/python3.YY<span class="w"> </span><span class="m">2</span>
+</pre></div>
+</div>
+<p>Next type the following command which will prompt you for the new default version.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>update-alternatives<span class="w"> </span>--config<span class="w"> </span>python
+</pre></div>
+</div>
+<p>Finally lets install the Python package manager <code class="docutils literal notranslate"><span class="pre">pip</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>python3-pip
+</pre></div>
+</div>
+</section>
+<section id="install-poetry">
+<h3>Install Poetry<a class="headerlink" href="#install-poetry" title="Link to this heading"></a></h3>
+<p>Poetry is one of the more modern Python package managers to compliment <code class="docutils literal notranslate"><span class="pre">pip</span></code>.
+Before we can begin the Poetry install we need to install <code class="docutils literal notranslate"><span class="pre">pipx</span></code> with the following
+commands.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>pipx
+pipx<span class="w"> </span>ensurepath
+</pre></div>
+</div>
+<p>Next we can install Poetry with the following command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pipx<span class="w"> </span>install<span class="w"> </span>poetry
+</pre></div>
+</div>
+<p>Finally we will set up Poetry to ensure the Python virtual environments are
+managed in project and not stored in the home directory.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>config<span class="w"> </span>virtualenvs.in-project<span class="w"> </span><span class="nb">true</span>
+</pre></div>
+</div>
+</section>
+<section id="install-c-and-c-compilers">
+<h3>Install C and C++ Compilers<a class="headerlink" href="#install-c-and-c-compilers" title="Link to this heading"></a></h3>
+<p>The following commands will install <code class="docutils literal notranslate"><span class="pre">gcc</span></code> and <code class="docutils literal notranslate"><span class="pre">clang</span></code> compilers.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>clang
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>gcc
+</pre></div>
+</div>
+<p>The following set of commands will use deadsnakes to install CMake</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>update
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>apt-transport-https<span class="w"> </span>ca-certificates<span class="w"> </span>gnupg<span class="w"> </span>software-properties-common<span class="w"> </span>wget
+
+wget<span class="w"> </span>-O<span class="w"> </span>-<span class="w"> </span>https://apt.kitware.com/keys/kitware-archive-latest.asc<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+gpg<span class="w"> </span>--dearmor<span class="w"> </span>-<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>/usr/share/keyrings/kitware-archive-keyring.gpg<span class="w"> </span>&gt;<span class="w"> </span>/dev/null
+
+<span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ jammy main&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+sudo<span class="w"> </span>tee<span class="w"> </span>/etc/apt/sources.list.d/kitware.list<span class="w"> </span>&gt;<span class="w"> </span>/dev/null
+
+sudo<span class="w"> </span>apt<span class="w"> </span>update
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>cmake
+</pre></div>
+</div>
+<p>Finally we will instal CMocka, a comman unit test environment for the C programming
+language.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>update
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>libmocka-dev
+</pre></div>
+</div>
+</section>
+<section id="set-up-ide">
+<h3>Set up IDE<a class="headerlink" href="#set-up-ide" title="Link to this heading"></a></h3>
+<p>Finally we need to move over the last set of files from the <code class="docutils literal notranslate"><span class="pre">config</span> <span class="pre">files</span> <span class="pre">directory</span></code>
+that enables us to use our Integrated Developer Environment.  Type the following
+commands into your temrinal.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>-r<span class="w"> </span>~/Code_Dev/OS/PopConfig/.config/py_files<span class="w"> </span>~/.config/py_files
+cp<span class="w"> </span>-r<span class="w"> </span>~/Code_Dev/OS/PopConfig/.config/c_files<span class="w"> </span>~/.config/c_files
+cp<span class="w"> </span>-r<span class="w"> </span>~/Code_Dev/OS/PopConfig/.config/c++_files<span class="w"> </span>~/.config/c++_files
+</pre></div>
+</div>
+<p>With these files transferred you can now take full advantage of the aliases
+maintained in the <code class="docutils literal notranslate"><span class="pre">~/.config/bash_scripts</span></code> or <code class="docutils literal notranslate"><span class="pre">~/.config/zsh_scripts</span></code> file
+depending on whether you are using Bash or ZShell.  In either case, you should
+inspect the file to ensure you know the range of capabilities at your fingertips.</p>
+<p>For example the command</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>create_py_dir
+</pre></div>
+</div>
+<p>Will prompt the user to enter the name of a Python directory and then it will
+create the directory structure, install the required development packages using
+Poetry to a local virtual environment and then open an Integrated Developer
+Environment using NeoVim and tmux.  The IDE can be closed with the following
+command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tmux<span class="w"> </span>kill-session
+</pre></div>
+</div>
+<p>In addition, the IDE for that directory can be reopened with the command</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>open_py_ide<span class="w"> </span>directory_name
+</pre></div>
+</div>
+<p>There are also commands to create python files and test files that are pre-populated
+with header information.  Similar commands exist for the C and C++ programming
+languages.</p>
+</section>
 </section>
 </section>
 

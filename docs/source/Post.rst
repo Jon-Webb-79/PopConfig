@@ -250,3 +250,176 @@ background.  To install tmux enter the following commands into your terminal.
 
 Next type ``tmux`` into your terminal to verify that tmux is working correctly.
 To exit type ``tmux kill-session``.
+
+Install Software Development Environments 
+=========================================
+This section describes the process for installing C, C++, and Python programming 
+languages to include a tmux based integrated developer environment (IDE).
+
+Install Python 
+--------------
+PopOS comes pre-installed with an older version of Python, and unfortunately the  
+``apt`` repository does not maintain up to date versions of Python.  For this 
+reason we will use the dead snakes repository to install python.  If you have not 
+yet installed deadsnakes enter the following commands into your terminal.
+
+.. code-block:: bash 
+
+   sudo apt install software-properties-common 
+   sudo add-apt-repository ppa:deadsnakes/ppa 
+   sudo apt update 
+
+Next lets verify the version of Python already installed with the following command.
+
+.. code-block:: bash 
+
+   python3 --version 
+
+Next lets check to see if the version we want to download is available with the  
+following command where XX should be the version of python you are looking for.
+
+.. code-block:: bash 
+
+   sudo apt-cache policy python3.XX
+
+If the version is available type the following command to download the required 
+version.
+
+.. code-block:: bash 
+
+   sudo apt install python 3.XX 
+
+At this point the required version of Python has been installed but it will not 
+be listed if you type 
+
+.. code-block:: bash 
+
+   python3 --version 
+
+and the following command will not be recognized at all 
+
+.. code-block:: bash 
+
+   python --version 
+
+We will not configure the term ``python`` to be set to the downloaded version and 
+``python3`` will be set to the version that existed with the PopOS install.  In these 
+commands ``XX`` represents the recently downloaded version and ``YY`` represents the 
+initial version.
+
+.. code-block:: bash 
+
+   sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.XX 1 
+   sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.YY 2 
+
+Next type the following command which will prompt you for the new default version.
+
+.. code-block:: bash 
+
+   sudo update-alternatives --config python 
+
+Finally lets install the Python package manager ``pip``.
+
+.. code-block:: bash 
+
+   sudo apt install python3-pip
+
+Install Poetry 
+--------------
+Poetry is one of the more modern Python package managers to compliment ``pip``.
+Before we can begin the Poetry install we need to install ``pipx`` with the following 
+commands.
+
+.. code-block:: bash 
+
+   sudo apt install pipx 
+   pipx ensurepath 
+
+Next we can install Poetry with the following command.
+
+.. code-block:: bash 
+
+   pipx install poetry 
+
+Finally we will set up Poetry to ensure the Python virtual environments are 
+managed in project and not stored in the home directory.
+
+.. code-block:: bash 
+
+   poetry config virtualenvs.in-project true 
+
+Install C and C++ Compilers 
+---------------------------
+The following commands will install ``gcc`` and ``clang`` compilers.
+
+.. code-block:: bash 
+
+   sudo apt install clang 
+   sudo apt install gcc 
+
+The following set of commands will use deadsnakes to install CMake 
+
+.. code-block:: bash 
+
+   sudo apt update
+   sudo apt install -y apt-transport-https ca-certificates gnupg software-properties-common wget
+
+   wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | \
+   gpg --dearmor - | sudo tee /usr/share/keyrings/kitware-archive-keyring.gpg > /dev/null
+
+   echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ jammy main' | \
+   sudo tee /etc/apt/sources.list.d/kitware.list > /dev/null
+    
+   sudo apt update
+   sudo apt install cmake
+
+Finally we will instal CMocka, a comman unit test environment for the C programming 
+language. 
+
+.. code-block:: bash 
+
+   sudo apt update 
+   sudo apt install libmocka-dev
+
+Set up IDE 
+----------
+Finally we need to move over the last set of files from the ``config files directory``
+that enables us to use our Integrated Developer Environment.  Type the following  
+commands into your temrinal.
+
+.. code-block:: bash 
+
+   cp -r ~/Code_Dev/OS/PopConfig/.config/py_files ~/.config/py_files 
+   cp -r ~/Code_Dev/OS/PopConfig/.config/c_files ~/.config/c_files 
+   cp -r ~/Code_Dev/OS/PopConfig/.config/c++_files ~/.config/c++_files
+
+With these files transferred you can now take full advantage of the aliases 
+maintained in the ``~/.config/bash_scripts`` or ``~/.config/zsh_scripts`` file 
+depending on whether you are using Bash or ZShell.  In either case, you should 
+inspect the file to ensure you know the range of capabilities at your fingertips.
+
+For example the command 
+
+.. code-block:: bash 
+
+   create_py_dir 
+
+Will prompt the user to enter the name of a Python directory and then it will 
+create the directory structure, install the required development packages using  
+Poetry to a local virtual environment and then open an Integrated Developer 
+Environment using NeoVim and tmux.  The IDE can be closed with the following 
+command.
+
+.. code-block:: bash 
+
+   tmux kill-session 
+
+In addition, the IDE for that directory can be reopened with the command 
+
+.. code-block:: bash 
+
+   open_py_ide directory_name 
+
+There are also commands to create python files and test files that are pre-populated 
+with header information.  Similar commands exist for the C and C++ programming 
+languages.
