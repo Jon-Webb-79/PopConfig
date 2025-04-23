@@ -52,6 +52,12 @@
 <li class="toctree-l2"><a class="reference internal" href="#install-snapd">Install snapd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#install-dead-snakes">Install Dead Snakes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#install-neovim">Install NeoVim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-shell-environments">Install Shell Environments</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Bash</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#zshell">ZShell</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#install-tmux">Install tmux</a></li>
 </ul>
 </li>
 </ul>
@@ -114,7 +120,7 @@ This password can be generated in the <code class="docutils literal notranslate"
 you have a Github account.</p>
 </section>
 <section id="config-files">
-<h2>Config Files<a class="headerlink" href="#config-files" title="Link to this heading"></a></h2>
+<span id="configfiles"></span><h2>Config Files<a class="headerlink" href="#config-files" title="Link to this heading"></a></h2>
 <p>Once you have installed PopOS and configured Gnome, you are
 ready to begin the installation of other packages.  In addition, we
 will also rely on the use of configuration files that can be downloaded
@@ -124,6 +130,8 @@ mkdir<span class="w"> </span>~/Code_Dev/OS
 git<span class="w"> </span>clone<span class="w"> </span>https://github.com/Jon-Webb-79/PopConfig.git<span class="w"> </span>~/Code_Dev/OS/PopConfig
 </pre></div>
 </div>
+<p>For the rest of these documents this will be referred to as the
+<code class="docutils literal notranslate"><span class="pre">config</span> <span class="pre">files</span> <span class="pre">directory</span></code>.</p>
 </section>
 <section id="update-terminal">
 <h2>Update Terminal<a class="headerlink" href="#update-terminal" title="Link to this heading"></a></h2>
@@ -141,7 +149,7 @@ sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> <
 </pre></div>
 </div>
 <p>Next we need to create some relevant directories and move some configuration files
-from our <code class="docutils literal notranslate"><span class="pre">PopConfig</span></code> directory we downloaded from Github eariler.</p>
+from our <code class="docutils literal notranslate"><span class="pre">config</span> <span class="pre">files</span> <span class="pre">directory</span></code> directory we downloaded from Github eariler.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>~/Code_Dev/OS/PopConfig/.config/ghostty<span class="w"> </span>~/.config/
 </pre></div>
 </div>
@@ -157,7 +165,7 @@ sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> <
 </div>
 </section>
 <section id="install-dead-snakes">
-<h2>Install Dead Snakes<a class="headerlink" href="#install-dead-snakes" title="Link to this heading"></a></h2>
+<span id="dead-snakes"></span><h2>Install Dead Snakes<a class="headerlink" href="#install-dead-snakes" title="Link to this heading"></a></h2>
 <p>The Ubuntu <cite>apt`</cite> package manager has most packages that a user might need.  However,
 <cite>apt</cite> is not updated frequently and as a result, many packages in the <cite>apt</cite>
 repository are out od date.  The Dead Snakes repository helps merge modern
@@ -170,7 +178,119 @@ sudo<span class="w"> </span>add-apt-repository<span class="w"> </span>ppa:deadsn
 </section>
 <section id="install-neovim">
 <h2>Install NeoVim<a class="headerlink" href="#install-neovim" title="Link to this heading"></a></h2>
-<p>TBD</p>
+<p>Many future installations will require a text editor, so it makes sense to
+install NeoVim now so it is available for the modification of future configuration
+files.  First we need to move some files from our <code class="docutils literal notranslate"><span class="pre">config</span> <span class="pre">files</span> <span class="pre">directory</span></code> with the
+following command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>~/Code_Dev/OS/PopConfig/.config/nvim<span class="w"> </span>~/.config/
+</pre></div>
+</div>
+<p>In order to ensure that some of the files do not cause an issue, we will temporarily
+move the <code class="docutils literal notranslate"><span class="pre">after</span></code> directory to the Desktop with the following command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mv<span class="w"> </span>~/.config/nvim/after<span class="w"> </span>~/Desktop/
+</pre></div>
+</div>
+<p>Next we need to install the NeoVim package manager <code class="docutils literal notranslate"><span class="pre">Packer</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>--depth<span class="w"> </span><span class="m">1</span><span class="w"> </span>https://github.com/wbthomason/packer.nvim<span class="se">\</span>
+<span class="w"> </span>~/.local/share/nvim/site/pack/packer/start/packer.nvim
+</pre></div>
+</div>
+<p>Next we will install NeoVim; however, this step relies on the <a class="reference internal" href="#dead-snakes"><span class="std std-ref">Dead Snakes</span></a>
+package to work correctly.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>add-apt-repository<span class="w"> </span>ppa:neovim-ppa/unstable
+sudo<span class="w"> </span>apt-get<span class="w"> </span>update
+sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>neovim
+</pre></div>
+</div>
+<p>Close your terminal and reopen it to ensure the neovim install is recognized
+by the session.  Open the <code class="docutils literal notranslate"><span class="pre">packer.lua</span></code> file in the <code class="docutils literal notranslate"><span class="pre">.config</span></code> directory with
+NeoVim using the following command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nvim<span class="w"> </span>~/.config/nvim/lua/core/packer.lua
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This will lead to the display of many errors that can be ignored.  If errors to appear, press enter until the errors dissapear.</p>
+</div>
+<p>Within the NeoVim session enter into the command mode by pressing <cite>Shift :</cite>.  When in
+command mode enter <cite>so</cite> and then depress enter.  Next enter command mode again and
+type <code class="docutils literal notranslate"><span class="pre">PackerSync</span></code> then hit enter.  This should start the process of downloading all
+packages which will resolve any errors.  Next move the <code class="docutils literal notranslate"><span class="pre">after</span></code> file back to the appropriate
+directory.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mv<span class="w"> </span>~/Desktop/after<span class="w"> </span>~/.config/nvim/
+</pre></div>
+</div>
+<p>Neovim should not be properly configured.  Any file can be opened with the <code class="docutils literal notranslate"><span class="pre">nvim</span></code>
+command.</p>
+</section>
+<section id="install-shell-environments">
+<h2>Install Shell Environments<a class="headerlink" href="#install-shell-environments" title="Link to this heading"></a></h2>
+<p>This section will walk a user through the process of setting up environments
+for Bash or ZShell scripting.</p>
+<section id="id1">
+<h3>Bash<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>PopOS comes with Bash pre-installed; however, it needs to be configured.  First
+we will set it up with a Powerline satus bar with the following terminal command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>powerline:w
+sudo<span class="w"> </span>cp<span class="w"> </span>-r<span class="w"> </span>~/Code_Dev/OS/PopConfig/powerline<span class="w"> </span>/usr/share/
+</pre></div>
+</div>
+<p>Next we need to move the alias files from the <code class="docutils literal notranslate"><span class="pre">config</span> <span class="pre">files</span> <span class="pre">directory</span></code> with the
+following command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>-r<span class="w"> </span>~/Code_Dev/OS/PopConfig/.config/bash_scripts<span class="w"> </span>~/.config/
+</pre></div>
+</div>
+<p>Next we need to bring over the hidden bash files with the following commands.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>~/code_Dev/OS/PopConfig/.bashrc<span class="w"> </span>~/.<span class="w"> </span>~/.bashrc
+cp<span class="w"> </span>~/Code_Dev/OS/PopConfig/.bash_profile<span class="w"> </span>~/.bash_profile
+</pre></div>
+</div>
+<p>Next update your terminal with the following command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>~/.bashrc
+</pre></div>
+</div>
+</section>
+<section id="zshell">
+<h3>ZShell<a class="headerlink" href="#zshell" title="Link to this heading"></a></h3>
+<p>While Bash is a great shell scripting environment, ZShell has slowly overtaken
+it with modern capabilities.  Unfortunately ZShell does not come pre-installed
+with PopOS and can be installed with the following command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>zsh
+</pre></div>
+</div>
+<p>Just like the Bash set up process we will need to execute the following commands
+to import our alias files and hidden files.  This will also install a powerline
+status bar for the configuration.  If you already installed powerline as part
+of the Bash installation you can skip those commands in this section.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>powerline:w
+cp<span class="w"> </span>-r<span class="w"> </span>~/Code_Dev/OS/PopConfig/.config/zsh_scripts<span class="w"> </span>~/.config/
+cp<span class="w"> </span>~/Code_Dev/OS/PopConfig/.zprofile<span class="w"> </span>~/.zprofile
+cp<span class="w"> </span>~/Code_Dev/OS/PopConfig/.zshrc<span class="w"> </span>~/.zshrc
+sudo<span class="w"> </span>cp<span class="w"> </span>-r<span class="w"> </span>~/Code_Dev/OS/PopConfig/powerline<span class="w"> </span>/usr/share/
+</pre></div>
+</div>
+<p>Next we need to switch our shell from Bash to ZShell with the following command.
+The value of <code class="docutils literal notranslate"><span class="pre">username</span></code> in the below command should be exchanged for your actual
+username.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">chsh</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">zsh</span> <span class="n">username</span>
+</pre></div>
+</div>
+<p>Next we need to restart our computer for the changes to fully take extent.  Once
+you log back into your account zshell will be the default configuration.</p>
+</section>
+</section>
+<section id="install-tmux">
+<h2>Install tmux<a class="headerlink" href="#install-tmux" title="Link to this heading"></a></h2>
+<p>Tmux is the premier terminal emulator that allows a user to run a shell in the
+background.  To install tmux enter the following commands into your terminal.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>tmux
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/tmux-plugins/tpm/tpm<span class="w"> </span>~/.tmux/plugins/tpm
+vp<span class="w"> </span>~/Code_Dev/OS/PopConfig/.tmux.conf<span class="w"> </span>~/.tmux.conf
+tmux<span class="w"> </span><span class="nb">source</span><span class="w"> </span>~/.tmux.conf
+</pre></div>
+</div>
+<p>Next type <code class="docutils literal notranslate"><span class="pre">tmux</span></code> into your terminal to verify that tmux is working correctly.
+To exit type <code class="docutils literal notranslate"><span class="pre">tmux</span> <span class="pre">kill-session</span></code>.</p>
 </section>
 </section>
 
