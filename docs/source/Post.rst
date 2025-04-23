@@ -481,3 +481,66 @@ a system backup from the terminal with the following command.
 The above command will prompt the user to select the backup drive where they want to 
 store their backup, but it must be a connected backup hard drive and does NOT 
 conduct a backup to a networked location.
+
+.. note:: In its current configuraiton, this script is run manually
+
+Manage Memory 
+=============
+After using a computer for a while it is often the case that the ``Downloads`` folder 
+will become overburdened with data that has not been cleaned up.  To help manage 
+this we are going to create a ``~/scripts`` directory and populate it with a bash 
+script that can be manually run.
+
+First verify if a directory titled ``~/scripts`` already exists 
+
+.. code-block:: bash 
+
+   ls ~/scripts 
+
+if it does not exist,create it.
+
+.. code-block:: bash 
+
+   mkdir ~/scripts 
+
+Next move the ``mngDownloads.sh`` script from the ``config files directory``.
+
+.. code-block:: bash 
+
+   cp ~/Code_Dev/OS/PopConfig/mngDownloads.sh ~/scripts/
+
+Now you can navigate to the script and open it with a text editor.  Look for 
+the variable ``period`` in the script.  This variable can be set to ``1HR``,
+``1D``, ``1WK``, ``2WK``, or ``1MO``, representing 1 hour, 1 day, 1 week,
+2 weeks, or 1 month, as the period between now and the last time the contents 
+of the Downloads directory was deleted.  Each time the directory is delete it 
+will log the event in the ~/logfiles/downloads.log file.  
+
+.. note:: This script in its current configuration is run manually, but ensure that 
+   it is an executable by running the command ``chmod +x mngDownloads.sh``
+
+In addition, the user can also manually manage the cache memory with the following  
+commands.  The first command will determine how much memory is being consumed in the 
+cache and display it to the user.  The second command will delete the cache.
+
+.. code-block:: bash 
+
+   du -sh ~/.cache/ 
+   rm -rf ~/.cache/*
+
+However, deleting the entire cache can temporarily slow your computer down by 
+deleting files that store states for the opening and execution of programs.  A script 
+titled ``cleanCache.sh`` exists in the ``config files directory`` that can be used 
+to only delete cache files older than a certain date or that are larger than a 
+certian size.  Lets move that script to the ``scripts`` directory.
+
+.. code-block:: bash 
+
+   cp ~/Code_Dev/OS/PopConfig/cleanCache.sh  ~/scripts/
+
+The user can open the file with a text editor and look for the variables 
+``MIN_SIZE`` and ``OLDER_THAN_DAYS`` and set those varibales to a desired 
+value.  Once moved this file can be executed manually.
+
+.. note:: This script in its current configuration is run manually, but ensure that 
+   it is an executable by running the command ``chmod +x cleanCache.sh``

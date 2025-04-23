@@ -69,6 +69,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#install-pdflatex">Install pdfLaTeX</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#install-misc-packages">Install Misc Packages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#system-backup">System Backup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#manage-memory">Manage Memory</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Trouble.html">Trouble Shoot</a></li>
@@ -490,6 +491,63 @@ a system backup from the terminal with the following command.</p>
 <p>The above command will prompt the user to select the backup drive where they want to
 store their backup, but it must be a connected backup hard drive and does NOT
 conduct a backup to a networked location.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In its current configuraiton, this script is run manually</p>
+</div>
+</section>
+<section id="manage-memory">
+<h2>Manage Memory<a class="headerlink" href="#manage-memory" title="Link to this heading"></a></h2>
+<p>After using a computer for a while it is often the case that the <code class="docutils literal notranslate"><span class="pre">Downloads</span></code> folder
+will become overburdened with data that has not been cleaned up.  To help manage
+this we are going to create a <code class="docutils literal notranslate"><span class="pre">~/scripts</span></code> directory and populate it with a bash
+script that can be manually run.</p>
+<p>First verify if a directory titled <code class="docutils literal notranslate"><span class="pre">~/scripts</span></code> already exists</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span>~/scripts
+</pre></div>
+</div>
+<p>if it does not exist,create it.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>~/scripts
+</pre></div>
+</div>
+<p>Next move the <code class="docutils literal notranslate"><span class="pre">mngDownloads.sh</span></code> script from the <code class="docutils literal notranslate"><span class="pre">config</span> <span class="pre">files</span> <span class="pre">directory</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>~/Code_Dev/OS/PopConfig/mngDownloads.sh<span class="w"> </span>~/scripts/
+</pre></div>
+</div>
+<p>Now you can navigate to the script and open it with a text editor.  Look for
+the variable <code class="docutils literal notranslate"><span class="pre">period</span></code> in the script.  This variable can be set to <code class="docutils literal notranslate"><span class="pre">1HR</span></code>,
+<code class="docutils literal notranslate"><span class="pre">1D</span></code>, <code class="docutils literal notranslate"><span class="pre">1WK</span></code>, <code class="docutils literal notranslate"><span class="pre">2WK</span></code>, or <code class="docutils literal notranslate"><span class="pre">1MO</span></code>, representing 1 hour, 1 day, 1 week,
+2 weeks, or 1 month, as the period between now and the last time the contents
+of the Downloads directory was deleted.  Each time the directory is delete it
+will log the event in the ~/logfiles/downloads.log file.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This script in its current configuration is run manually, but ensure that
+it is an executable by running the command <code class="docutils literal notranslate"><span class="pre">chmod</span> <span class="pre">+x</span> <span class="pre">mngDownloads.sh</span></code></p>
+</div>
+<p>In addition, the user can also manually manage the cache memory with the following
+commands.  The first command will determine how much memory is being consumed in the
+cache and display it to the user.  The second command will delete the cache.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>du<span class="w"> </span>-sh<span class="w"> </span>~/.cache/
+rm<span class="w"> </span>-rf<span class="w"> </span>~/.cache/*
+</pre></div>
+</div>
+<p>However, deleting the entire cache can temporarily slow your computer down by
+deleting files that store states for the opening and execution of programs.  A script
+titled <code class="docutils literal notranslate"><span class="pre">cleanCache.sh</span></code> exists in the <code class="docutils literal notranslate"><span class="pre">config</span> <span class="pre">files</span> <span class="pre">directory</span></code> that can be used
+to only delete cache files older than a certain date or that are larger than a
+certian size.  Lets move that script to the <code class="docutils literal notranslate"><span class="pre">scripts</span></code> directory.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>~/Code_Dev/OS/PopConfig/cleanCache.sh<span class="w">  </span>~/scripts/
+</pre></div>
+</div>
+<p>The user can open the file with a text editor and look for the variables
+<code class="docutils literal notranslate"><span class="pre">MIN_SIZE</span></code> and <code class="docutils literal notranslate"><span class="pre">OLDER_THAN_DAYS</span></code> and set those varibales to a desired
+value.  Once moved this file can be executed manually.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This script in its current configuration is run manually, but ensure that
+it is an executable by running the command <code class="docutils literal notranslate"><span class="pre">chmod</span> <span class="pre">+x</span> <span class="pre">cleanCache.sh</span></code></p>
+</div>
 </section>
 </section>
 

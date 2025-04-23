@@ -466,7 +466,7 @@ If it is not installed, then install ``e2label``
 
 .. code-block:: bash 
 
-   sudo pacman -S e2label 
+   sudo apt install e2fsprogs
 
 Finally we can re-label the drive with the following command 
 
