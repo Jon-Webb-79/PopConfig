@@ -167,6 +167,36 @@ directory.
 Neovim should not be properly configured.  Any file can be opened with the ``nvim``
 command.
 
+Hostname 
+========
+Next we will configure the hostname with the following command 
+
+.. code-block:: bash 
+
+   hostnamectl set-hostname hostname 
+
+We can now verify the hostname is set correctly with the command;
+
+.. code-block:: bash 
+
+   cat /etc/hosts 
+
+Finally we need to ensure the hostname is part of hte network configuration.  Using 
+NeoVim lets update the hots file 
+
+.. code-block:: bash 
+
+   nvim /etc/hosts 
+
+Ensure the file configuration looks like this but replace each ``hostname``
+with your actual hostname.
+
+.. code-block:: bash 
+
+   127.0.0.1  localhost
+   ::1        localhost
+   127.0.1.1  hostname.localadmin hostname
+
 Install Shell Environments
 ==========================
 This section will walk a user through the process of setting up environments 
@@ -449,6 +479,7 @@ The following commands can be used to install misc packages for use in PopOS.
    sudo apt install xclip
    sudo apt install libreoffice
    sudo apt install neofetch
+   sudo apt install cron
 
 We also need to install a free PDF Editor with the following instructions.
 First, navigate to the `Master PDF Editor <https://code-industry.net/masterpdfeditor/>`_
@@ -469,7 +500,17 @@ that utilyzes the ``rsync`` utility.
 
 .. code-block:: bash 
 
-   sudo cp -r ~/Code_Dev/OS/PopConfig /usr/local/bin/core_backup 
+   sudo cp ~/Code_Dev/OS/PopConfig/core_backup /usr/local/bin/core_backup 
+
+Once the file is transferred you should open it with vim to make some changes.
+Since this is now in a system directory, you will need to use the ``sudo`` command 
+to save any changes.  Within this file you will see a variable titled ``ENABLED``
+which is defaulted to ``true``.  This ensures that the file is active for automation.
+if set to ``false`` no backups will be allowed.  This is a flag that you may want 
+to toggle to ``false`` in time frames where the backup hard drive is not connected.
+The variable titled ``BACKUP_DRIVE_LABEL`` is defaulted to ``BackupDrive`` but you will 
+want to replace this with the name of your backup drive.  A retention period is 
+also listed which you can change at your discretion.
 
 Once this file is moved to the ``/usr/local/bin`` directory you can initiate 
 a system backup from the terminal with the following command.
@@ -478,11 +519,59 @@ a system backup from the terminal with the following command.
 
    core_backup 
 
-The above command will prompt the user to select the backup drive where they want to 
-store their backup, but it must be a connected backup hard drive and does NOT 
-conduct a backup to a networked location.
-
 .. note:: In its current configuraiton, this script is run manually
+
+Now lets automate the system backup time frame with the following command.
+
+.. code-block:: bash 
+
+   sudo nvim /etc/systemd/system/core_backup.service
+
+Once in neovim, enter the following data and save as well as close the file.
+
+.. code-block:: bash 
+
+   [Unit]
+   Description=Core system backup (rsync snapshot)
+   Wants=core_backup.timer
+
+   [Service]
+   Type=oneshot
+   ExecStart=/usr/local/bin/core_backup
+
+Next create the timer file.
+
+.. code-block:: bash 
+
+   sudo nvim /etc/systemd/system/core_backup.timer
+
+Enter the following data, then save and close the file.
+
+.. code-block:: bash 
+
+   [Unit]
+   Description=Run core system backup daily
+
+   [Timer]
+   OnCalendar=daily
+   Persistent=true
+
+   [Install]
+   WantedBy=timers.target
+
+Reload and enable the timer 
+
+.. code-block:: bash 
+
+   sudo systemctl daemon-reexec
+   sudo systemctl daemon-reload
+   sudo systemctl enable --now core_backup.timer
+
+Next, verify the timer is active.
+
+.. code-block:: bash 
+
+   systemctl list-timers core_backup.timer
 
 Manage Memory 
 =============
@@ -544,3 +633,48 @@ value.  Once moved this file can be executed manually.
 
 .. note:: This script in its current configuration is run manually, but ensure that 
    it is an executable by running the command ``chmod +x cleanCache.sh``
+
+Next we are going to move a crontab file to the appropriate local directory and 
+then activate cron.  This will run the ``mngDownloads.sh`` once every hour.  In each 
+iteration it will check the time to determine if it needs to purge the ``Downloads`` directory.
+This will also run the ``cleanCache.sh`` file once every 2 days; however, ther frequency 
+for cron tab runs can be changed within the file.
+
+.. code-block:: bash 
+
+   crontab -e 
+
+The above command will open the local crontab.  You can then pase the following 
+data to the cron tab using vim.  Be sure to replace each instance of ``username``
+with your actual username.
+
+.. code-block:: bash 
+
+   # Crontab for username
+   # Run mngDownloads.sh every hour
+   0 * * * * /home/username/scripts/mngDownloads.sh
+
+   # Run cleanCache.sh every 2 days at 3:00 AM
+   0 3 */2 * * /home/username/scripts/cleanCache.sh
+
+Then type the following command to ensure your tasks are running in cron.
+
+.. code-block:: bash 
+
+   crontab -l
+
+At this point also run the following command to ensure that cron is running.
+
+.. code-block:: bash 
+
+   systemctl status cron 
+
+If it is not running, enter these two commands. 
+
+.. code-block:: bash 
+
+   sudo systemctl start cron 
+   sudo systemctl enable cron
+
+Then check the status again.
+
