@@ -60,6 +60,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#rename-the-drive">Rename the Drive</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#nvidia-driver-issues">NVIDIA Driver Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#unencrypt-disk">Unencrypt Disk</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -495,6 +499,76 @@ order to unmount the drive type</p>
 </div>
 <p>Finally we can re-label the drive with the following command</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>e2label<span class="w"> </span>/dev/sda1<span class="w"> </span>user_defined_drive_name
+</pre></div>
+</div>
+</section>
+</section>
+<section id="nvidia-driver-issues">
+<h2>NVIDIA Driver Issues<a class="headerlink" href="#nvidia-driver-issues" title="Link to this heading"></a></h2>
+<p>Unfortunately some NVIDIA drivers were not sufficiently tested for compatibility
+with the 6.12 Linux Kernal.  This sometimes causes issues when updating firmware right
+after installing PopOS.  In order to fix this we will need to first install a fresh
+version of PopOS.  To do this, shut down your computer and restart it.  As soon as
+you restart your computer, repetitively depress the F12 key to enter into Bios mode.</p>
+<p>Once in Bios mode, select the <code class="docutils literal notranslate"><span class="pre">recovery</span> <span class="pre">mode</span></code> option.  Follow the prompts to reinstall
+a fresh version of PopOS.  Once a fresh installation has been added, shut the computer
+down again, and one more time enter into the <code class="docutils literal notranslate"><span class="pre">recovery</span> <span class="pre">mode</span></code> with the F12 key.
+Start the process of reinstalling PopOS; however, this time continue to select
+the default options until you get to a menu option for clean install or Refresh install
+options.  On the bottom left you will see another option for Demo Mode.  Click
+the Demo Mode option.  At this point ensure you have a hard link connection to the
+internet in case wireless drops.</p>
+<p>Open a terminal and type the following command;</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lsblk
+</pre></div>
+</div>
+<p>This should display a list of connected drives.  Assuming you are using an NVME
+drive, you should see an option like <code class="docutils literal notranslate"><span class="pre">/dev/nvme0n1p3</span></code>.  Make sure this exists
+before proceeding any further.</p>
+<section id="unencrypt-disk">
+<h3>Unencrypt Disk<a class="headerlink" href="#unencrypt-disk" title="Link to this heading"></a></h3>
+<p>This section is predicated on the fact you have an encrpted disk.  We need to unlock
+the encrypted disk with the following command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>cryptsetup<span class="w"> </span>luksOpen<span class="w"> </span>/dev/nvme0n1p3<span class="w"> </span>cryptdata
+</pre></div>
+</div>
+<p>Next we need to check our logical volumes with the following commands.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>lvscan
+sudo<span class="w"> </span>vgchange<span class="w"> </span>-ay
+</pre></div>
+</div>
+<p>This should yield a volume with the designator <code class="docutils literal notranslate"><span class="pre">data-root</span></code>.</p>
+<p>Next mount this drive</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>mount<span class="w"> </span>/dev/mapper/data-root<span class="w"> </span>/mnt
+</pre></div>
+</div>
+<p>Mount the efi partitian</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>mount<span class="w"> </span>/dev/nvme0n1p1<span class="w"> </span>/mnt/boot/efi
+
+<span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span>/dev<span class="w"> </span>/dev/pts<span class="w"> </span>/proc<span class="w"> </span>/sys<span class="w"> </span>/run<span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span>sudo<span class="w"> </span>mount<span class="w"> </span>-R<span class="w"> </span><span class="nv">$i</span><span class="w"> </span>/mnt<span class="nv">$i</span><span class="p">;</span><span class="w"> </span><span class="k">done</span>
+sudo<span class="w"> </span>chroot<span class="w"> </span>/mnt
+</pre></div>
+</div>
+<p>Next exit <code class="docutils literal notranslate"><span class="pre">chroot</span></code> and reboot</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">exit</span>
+reboot
+</pre></div>
+</div>
+<p>Finally run these commands to purge your system of any previous driver information
+and reinstall the correct data.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>purge<span class="w"> </span>~nnvidia
+sudo<span class="w"> </span>dpkg<span class="w"> </span>--configure<span class="w"> </span>-a
+sudo<span class="w"> </span>apt<span class="w"> </span>purge<span class="w"> </span>system76-driver-nvidia
+sudo<span class="w"> </span>dpkg<span class="w"> </span>--configure<span class="w"> </span>-a
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>system76-driver-nvidia
+sudo<span class="w"> </span>dpkg<span class="w"> </span>--configure<span class="w"> </span>-a
+
+sudo<span class="w"> </span>apt<span class="w"> </span>clean
+sudo<span class="w"> </span>apt<span class="w"> </span>update
+sudo<span class="w"> </span>dpkg<span class="w"> </span>--configure<span class="w"> </span>-a
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>-f
+sudo<span class="w"> </span>apt<span class="w"> </span>full-upgrade
+sudo<span class="w"> </span>apt<span class="w"> </span>autoremove<span class="w"> </span>--purge
 </pre></div>
 </div>
 </section>

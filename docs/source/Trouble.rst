@@ -473,3 +473,89 @@ Finally we can re-label the drive with the following command
 .. code-block:: bash 
 
    sudo e2label /dev/sda1 user_defined_drive_name
+
+NVIDIA Driver Issues 
+====================
+Unfortunately some NVIDIA drivers were not sufficiently tested for compatibility 
+with the 6.12 Linux Kernal.  This sometimes causes issues when updating firmware right 
+after installing PopOS.  In order to fix this we will need to first install a fresh 
+version of PopOS.  To do this, shut down your computer and restart it.  As soon as 
+you restart your computer, repetitively depress the F12 key to enter into Bios mode.
+
+Once in Bios mode, select the ``recovery mode`` option.  Follow the prompts to reinstall 
+a fresh version of PopOS.  Once a fresh installation has been added, shut the computer 
+down again, and one more time enter into the ``recovery mode`` with the F12 key.  
+Start the process of reinstalling PopOS; however, this time continue to select 
+the default options until you get to a menu option for clean install or Refresh install 
+options.  On the bottom left you will see another option for Demo Mode.  Click 
+the Demo Mode option.  At this point ensure you have a hard link connection to the 
+internet in case wireless drops.
+
+Open a terminal and type the following command;
+
+.. code-block:: bash 
+
+   lsblk 
+
+This should display a list of connected drives.  Assuming you are using an NVME 
+drive, you should see an option like ``/dev/nvme0n1p3``.  Make sure this exists 
+before proceeding any further.
+
+Unencrypt Disk 
+--------------
+This section is predicated on the fact you have an encrpted disk.  We need to unlock 
+the encrypted disk with the following command.
+
+.. code-block:: bash 
+
+   sudo cryptsetup luksOpen /dev/nvme0n1p3 cryptdata
+
+Next we need to check our logical volumes with the following commands.
+
+.. code-block:: bash 
+
+   sudo lvscan
+   sudo vgchange -ay
+
+This should yield a volume with the designator ``data-root``.
+
+Next mount this drive 
+
+.. code-block:: bash 
+
+   sudo mount /dev/mapper/data-root /mnt
+
+Mount the efi partitian 
+
+.. code-block:: bash 
+
+   sudo mount /dev/nvme0n1p1 /mnt/boot/efi
+
+   for i in /dev /dev/pts /proc /sys /run; do sudo mount -R $i /mnt$i; done
+   sudo chroot /mnt
+
+Next exit ``chroot`` and reboot 
+
+.. code-block:: bash 
+
+   exit 
+   reboot 
+
+Finally run these commands to purge your system of any previous driver information 
+and reinstall the correct data.
+
+.. code-block:: bash 
+
+   sudo apt purge ~nnvidia
+   sudo dpkg --configure -a
+   sudo apt purge system76-driver-nvidia
+   sudo dpkg --configure -a
+   sudo apt install system76-driver-nvidia
+   sudo dpkg --configure -a
+
+   sudo apt clean
+   sudo apt update
+   sudo dpkg --configure -a
+   sudo apt install -f
+   sudo apt full-upgrade
+   sudo apt autoremove --purge
