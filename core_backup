@@ -75,8 +75,11 @@ fi
 
 # ─── RUN BACKUP ─────────────────────────────────────────────────────────────────
 echo "[$DATE] Starting backup to $BACKUP_DEST" >> "$LOGFILE"
-rsync -aAXHv --delete "${EXCLUDE_FLAGS[@]}" $LINK_DEST "$SRC" "$BACKUP_DEST" \
-    >> "$LOGFILE" 2>&1
+if rsync -aAXH --delete "${EXCLUDE_FLAGS[@]}" $LINK_DEST "$SRC" "$BACKUP_DEST" >/dev/null 2>>"$LOGFILE"; then
+    echo "[$(date '+%Y-%m-%d_%H-%M-%S')] Backup to $BACKUP_DEST completed successfully" >> "$LOGFILE"
+else
+    echo "[$(date '+%Y-%m-%d_%H-%M-%S')] ERROR: Backup to $BACKUP_DEST failed" >> "$LOGFILE"
+fi
 
 # ─── REMOVE OLD BACKUPS ─────────────────────────────────────────────────────────
 find "$BACKUP_ROOT" -mindepth 1 -maxdepth 1 -type d -mtime +$RETENTION_DAYS -exec rm -rf {} \; \
