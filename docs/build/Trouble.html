@@ -64,6 +64,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#unencrypt-disk">Unencrypt Disk</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#syncthing">Syncthing</a></li>
 </ul>
 </li>
 </ul>
@@ -572,6 +573,56 @@ sudo<span class="w"> </span>apt<span class="w"> </span>autoremove<span class="w"
 </pre></div>
 </div>
 </section>
+</section>
+<section id="syncthing">
+<h2>Syncthing<a class="headerlink" href="#syncthing" title="Link to this heading"></a></h2>
+<p>Syncthing is a file service that allows you to sync computers to a central server.
+While it is preferable to have a central server for this service, you can also
+use a desktop of laptop to act as the central server.  To install, navigate
+to the <a class="reference external" href="https://apt.syncthing.net/">Syncthing Downloads</a> web page.  The instructions
+below should mirror the instructions on the web site.</p>
+<p>First verify the package authenticity with the following command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/etc/apt/keyrings
+sudo<span class="w"> </span>curl<span class="w"> </span>-L<span class="w"> </span>-o<span class="w"> </span>/etc/apt/keyrings/syncthing-archive-keyring.gpg<span class="w"> </span>https://syncthing.net/release-key.gpg
+</pre></div>
+</div>
+<p>Next add the stable channel to your apt sources</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;deb [signed-by=/etc/apt/keyrings/syncthing-archive-keyring.gpg] https://apt.syncthing.net/ syncthing stable&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>/etc/apt/sources.list.d/syncthing.list
+</pre></div>
+</div>
+<p>Next install the updated repository</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>update
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>syncthing
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The web site for syncthing asks you to use <code class="docutils literal notranslate"><span class="pre">apt-get</span></code>, but this is not necessary and you can just use <code class="docutils literal notranslate"><span class="pre">apt</span></code></p>
+</div>
+<p>Verify that syncthign is installed with a <code class="docutils literal notranslate"><span class="pre">which</span></code> command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>which<span class="w"> </span>syncthing
+</pre></div>
+</div>
+<p>Next lets set up systemd to automate syncthing.  Navigate to the
+<a class="reference external" href="https://github.com/syncthing/syncthing/tree/main/etc/linux-systemd">syncthing GitHub</a>
+web page.  Navigate to the system/syncthing&#64;.service document and open it.  Download the
+contents with the command</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget<span class="w"> </span>https://raw.githubusercontent.com/syncthing/syncthing/refs/heads/main/etc/linux-systemd/system/syncthing%40.service
+sudo<span class="w"> </span>chown<span class="w"> </span>root:<span class="w"> </span>syncthing@.service
+sudo<span class="w"> </span>mv<span class="w"> </span>syncthing@.service<span class="w"> </span>/etc/systemd/system/
+sudo<span class="w"> </span>systemctl<span class="w"> </span>daemon-reload
+</pre></div>
+</div>
+<p>Verify that syncthing is running on systemctl.  Replace <code class="docutils literal notranslate"><span class="pre">username</span></code> with your actual username</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl<span class="w"> </span>status<span class="w"> </span>syncthing@username
+</pre></div>
+</div>
+<p>If it is not running, enable it with the following command;</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>syncthing@username
+sudo<span class="w"> </span>systemctl<span class="w"> </span>start<span class="w"> </span>syncthing@username
+</pre></div>
+</div>
+<p>You can again check the status to ensure it is now running.</p>
 </section>
 </section>
 

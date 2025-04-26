@@ -559,3 +559,66 @@ and reinstall the correct data.
    sudo apt install -f
    sudo apt full-upgrade
    sudo apt autoremove --purge
+    
+Syncthing 
+=========
+Syncthing is a file service that allows you to sync computers to a central server.
+While it is preferable to have a central server for this service, you can also 
+use a desktop of laptop to act as the central server.  To install, navigate 
+to the `Syncthing Downloads <https://apt.syncthing.net/>`_ web page.  The instructions 
+below should mirror the instructions on the web site.
+
+First verify the package authenticity with the following command.
+
+.. code-block:: bash 
+
+   sudo mkdir -p /etc/apt/keyrings
+   sudo curl -L -o /etc/apt/keyrings/syncthing-archive-keyring.gpg https://syncthing.net/release-key.gpg
+
+Next add the stable channel to your apt sources 
+
+.. code-block:: bash 
+
+   echo "deb [signed-by=/etc/apt/keyrings/syncthing-archive-keyring.gpg] https://apt.syncthing.net/ syncthing stable" | sudo tee /etc/apt/sources.list.d/syncthing.list
+
+Next install the updated repository 
+
+.. code-block:: bash 
+
+   sudo apt update
+   sudo apt install syncthing
+
+.. note:: The web site for syncthing asks you to use ``apt-get``, but this is not necessary and you can just use ``apt``
+
+Verify that syncthign is installed with a ``which`` command.
+
+.. code-block:: bash 
+
+   which syncthing
+
+Next lets set up systemd to automate syncthing.  Navigate to the 
+`syncthing GitHub <https://github.com/syncthing/syncthing/tree/main/etc/linux-systemd>`_
+web page.  Navigate to the system/syncthing@.service document and open it.  Download the 
+contents with the command 
+
+.. code-block:: bash 
+
+   wget https://raw.githubusercontent.com/syncthing/syncthing/refs/heads/main/etc/linux-systemd/system/syncthing%40.service 
+   sudo chown root: syncthing@.service 
+   sudo mv syncthing@.service /etc/systemd/system/
+   sudo systemctl daemon-reload
+
+Verify that syncthing is running on systemctl.  Replace ``username`` with your actual username
+
+.. code-block:: bash 
+
+   systemctl status syncthing@username
+
+If it is not running, enable it with the following command;
+
+.. code-block:: bash 
+
+   sudo systemctl enable syncthing@username 
+   sudo systemctl start syncthing@username
+
+You can again check the status to ensure it is now running.
