@@ -622,3 +622,25 @@ If it is not running, enable it with the following command;
    sudo systemctl start syncthing@username
 
 You can again check the status to ensure it is now running.
+
+At this point you can check the status of the application by opening a browser
+and navigating to ``localhost:8384``
+
+Next type the following command to create the config files 
+
+.. code-block:: bash 
+
+   syncthing
+Next enter the following command to restart syncthing with the new configuration 
+file 
+
+.. code-block:: bash 
+
+   sudo systemctl restart syncthing@username
+
+Next log back into ``localhost:8384``.  This should give you a danger sign and 
+drive you to set a password which you should do under the GUI option.  Also 
+uncheck the start browser option.  If this gives you errors, navigate to the .config.xml 
+file and ensure it has the correct address for your home file.  
+
+.. note:: the home directory should be under ``home`` and not ``Users``

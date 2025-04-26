@@ -623,6 +623,25 @@ sudo<span class="w"> </span>systemctl<span class="w"> </span>start<span class="w
 </pre></div>
 </div>
 <p>You can again check the status to ensure it is now running.</p>
+<p>At this point you can check the status of the application by opening a browser
+and navigating to <code class="docutils literal notranslate"><span class="pre">localhost:8384</span></code></p>
+<p>Next type the following command to create the config files</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>syncthing
+</pre></div>
+</div>
+<p>Next enter the following command to restart syncthing with the new configuration
+file</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>syncthing@username
+</pre></div>
+</div>
+<p>Next log back into <code class="docutils literal notranslate"><span class="pre">localhost:8384</span></code>.  This should give you a danger sign and
+drive you to set a password which you should do under the GUI option.  Also
+uncheck the start browser option.  If this gives you errors, navigate to the .config.xml
+file and ensure it has the correct address for your home file.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>the home directory should be under <code class="docutils literal notranslate"><span class="pre">home</span></code> and not <code class="docutils literal notranslate"><span class="pre">Users</span></code></p>
+</div>
 </section>
 </section>
 
