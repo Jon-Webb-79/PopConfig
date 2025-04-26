@@ -566,6 +566,17 @@ sudo<span class="w"> </span>systemctl<span class="w"> </span><span class="nb">en
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl<span class="w"> </span>list-timers<span class="w"> </span>core_backup.timer
 </pre></div>
 </div>
+<p>Based on the hardware configuration, this set up can sometimes prevent the system
+from waking up following a prolonged inactive period.  If this is the case
+you will need to deactivate the timer and manually run the backup with
+the command</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>core_backup
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Since the backup is run at the system, not the user level, the log file can be found in the <code class="docutils literal notranslate"><span class="pre">/root</span></code> directory.  In order to gain permission to access the <code class="docutils literal notranslate"><span class="pre">/root</span></code> directory, you must use the command <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">-i</span></code>.</p>
+</div>
 </section>
 <section id="manage-memory">
 <h2>Manage Memory<a class="headerlink" href="#manage-memory" title="Link to this heading"></a></h2>

@@ -573,6 +573,17 @@ Next, verify the timer is active.
 
    systemctl list-timers core_backup.timer
 
+Based on the hardware configuration, this set up can sometimes prevent the system 
+from waking up following a prolonged inactive period.  If this is the case 
+you will need to deactivate the timer and manually run the backup with 
+the command 
+
+.. code-block:: bash 
+
+   sudo core_backup 
+
+.. note:: Since the backup is run at the system, not the user level, the log file can be found in the ``/root`` directory.  In order to gain permission to access the ``/root`` directory, you must use the command ``sudo -i``.
+
 Manage Memory 
 =============
 After using a computer for a while it is often the case that the ``Downloads`` folder 
