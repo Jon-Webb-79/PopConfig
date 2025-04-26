@@ -582,8 +582,6 @@ the command
 
    sudo core_backup 
 
-.. note:: Since the backup is run at the system, not the user level, the log file can be found in the ``/root`` directory.  In order to gain permission to access the ``/root`` directory, you must use the command ``sudo -i``.
-
 Manage Memory 
 =============
 After using a computer for a while it is often the case that the ``Downloads`` folder 

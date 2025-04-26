@@ -4,8 +4,8 @@ set -euo pipefail
 
 # ─── USER CONFIGURATION ─────────────────────────────────────────────────────────
 ENABLED=true                        # Set to 'false' to disable backups temporarily
-BACKUP_DRIVE_LABEL="BackupDrive"   # Replace with the actual label of your backup disk
-RETENTION_DAYS=14                  # Delete backups older than this (in days)
+BACKUP_DRIVE_LABEL="BackupDrive"     # Replace with your actual drive label
+RETENTION_DAYS=14                   # How long to keep old backups
 EXCLUDES=(
     "/dev/*"
     "/proc/*"
@@ -20,31 +20,30 @@ EXCLUDES=(
 # ─── SYSTEM PATHS AND VARIABLES ─────────────────────────────────────────────────
 USERNAME="${SUDO_USER:-$USER}"
 DATE=$(date '+%Y-%m-%d_%H-%M-%S')
-LOG_DIR="$HOME/logfiles"
+LOG_DIR="/home/$USERNAME/logfiles"
 LOGFILE="$LOG_DIR/backup_log.log"
 SRC="/"
 
-# Determine mount point base based on distro
+# ─── EARLY EXIT IF DISABLED ─────────────────────────────────────────────────────
+mkdir -p "$LOG_DIR"
+if [ "$ENABLED" != "true" ]; then
+    echo "[$DATE] Backup disabled via ENABLED flag" >> "$LOGFILE"
+    exit 0
+fi
+
+# ─── DETECT DISTRO AND BACKUP PATH ──────────────────────────────────────────────
 if grep -qE "Ubuntu|Pop" /etc/os-release; then
     MEDIA_BASE="/media/$USERNAME"
 elif grep -q "Arch" /etc/os-release; then
     MEDIA_BASE="/run/media/$USERNAME"
 else
-    echo "[$DATE] Unsupported Linux distribution" | tee -a "$LOGFILE"
+    echo "[$DATE] ERROR: Unsupported Linux distribution" >> "$LOGFILE"
     exit 1
 fi
 
 BACKUP_ROOT="$MEDIA_BASE/$BACKUP_DRIVE_LABEL"
 BACKUP_DEST="$BACKUP_ROOT/$DATE"
 
-# ─── EARLY EXIT IF DISABLED ─────────────────────────────────────────────────────
-mkdir -p "$LOG_DIR"
-if [ "$ENABLED" != "true" ]; then
-    echo "[$DATE] Backups disabled via ENABLED flag" >> "$LOGFILE"
-    exit 0
-fi
-
-# ─── CHECK PREREQUISITES ────────────────────────────────────────────────────────
 if [ ! -d "$BACKUP_ROOT" ]; then
     echo "[$DATE] ERROR: Backup drive not found at $BACKUP_ROOT" >> "$LOGFILE"
     exit 2
@@ -55,36 +54,77 @@ if ! command -v rsync &>/dev/null; then
     exit 3
 fi
 
-# ─── PREPARE BACKUP OPTIONS ─────────────────────────────────────────────────────
-mkdir -p "$BACKUP_DEST"
-
-EXCLUDE_FLAGS=()
-for item in "${EXCLUDES[@]}"; do
-    EXCLUDE_FLAGS+=("--exclude=$item")
-done
-
-# Detect previous backup
-LATEST_BACKUP=$(find "$BACKUP_ROOT" -mindepth 1 -maxdepth 1 -type d | sort | tail -n 1)
+# ─── FIND LATEST BACKUP ─────────────────────────────────────────────────────────
+LATEST_BACKUP=$(find "$BACKUP_ROOT" -mindepth 1 -maxdepth 1 -type d -printf "%T@ %p\n" | sort -n | awk '{print $2}' | tail -n 1)
 LINK_DEST=""
 if [[ -d "$LATEST_BACKUP" && "$LATEST_BACKUP" != "$BACKUP_DEST" ]]; then
     LINK_DEST="--link-dest=$LATEST_BACKUP"
-    echo "[$DATE] Using $LATEST_BACKUP as reference for incremental backup" >> "$LOGFILE"
+    echo "[$(date '+%Y-%m-%d_%H-%M-%S')] Using $LATEST_BACKUP as reference for incremental backup" >> "$LOGFILE"
 else
-    echo "[$DATE] No previous backup found; performing full backup" >> "$LOGFILE"
+    echo "[$(date '+%Y-%m-%d_%H-%M-%S')] No previous backup found; performing full backup" >> "$LOGFILE"
 fi
+
+# ─── CREATE NEW BACKUP DESTINATION ──────────────────────────────────────────────
+mkdir -p "$BACKUP_DEST"
 
 # ─── RUN BACKUP ─────────────────────────────────────────────────────────────────
-echo "[$DATE] Starting backup to $BACKUP_DEST" >> "$LOGFILE"
-if rsync -aAXH --delete "${EXCLUDE_FLAGS[@]}" $LINK_DEST "$SRC" "$BACKUP_DEST" >/dev/null 2>>"$LOGFILE"; then
-    echo "[$(date '+%Y-%m-%d_%H-%M-%S')] Backup to $BACKUP_DEST completed successfully" >> "$LOGFILE"
+START_TIME=$(date +%s)
+echo "[$(date '+%Y-%m-%d_%H-%M-%S')] Starting backup to $BACKUP_DEST" >> "$LOGFILE"
+
+# Assemble rsync command safely
+RSYNC_CMD=(rsync -aAXH --delete)
+for item in "${EXCLUDES[@]}"; do
+    RSYNC_CMD+=("--exclude=$item")
+done
+if [[ -n "$LATEST_BACKUP" ]]; then
+    RSYNC_CMD+=("--link-dest=$LATEST_BACKUP")
+fi
+RSYNC_CMD+=("$SRC" "$BACKUP_DEST")
+
+# Log what command we're running
+echo "[$(date '+%Y-%m-%d_%H-%M-%S')] Running rsync command: ${RSYNC_CMD[*]}" >> "$LOGFILE"
+
+# Run rsync
+if "${RSYNC_CMD[@]}" >/dev/null 2>>"$LOGFILE"; then
+    END_TIME=$(date +%s)
+    DURATION=$((END_TIME - START_TIME))
+    echo "[$(date '+%Y-%m-%d_%H-%M-%S')] Backup completed successfully in ${DURATION} seconds" >> "$LOGFILE"
 else
-    echo "[$(date '+%Y-%m-%d_%H-%M-%S')] ERROR: Backup to $BACKUP_DEST failed" >> "$LOGFILE"
+    echo "[$(date '+%Y-%m-%d_%H-%M-%S')] ERROR: Backup failed" >> "$LOGFILE"
+    exit 4
 fi
 
-# ─── REMOVE OLD BACKUPS ─────────────────────────────────────────────────────────
-find "$BACKUP_ROOT" -mindepth 1 -maxdepth 1 -type d -mtime +$RETENTION_DAYS -exec rm -rf {} \; \
-    && echo "[$DATE] Old backups removed (older than $RETENTION_DAYS days)" >> "$LOGFILE"
+# START_TIME=$(date +%s)
+# echo "[$(date '+%Y-%m-%d_%H-%M-%S')] Starting backup to $BACKUP_DEST" >> "$LOGFILE"
+#
+# # Assemble rsync command safely
+# RSYNC_CMD=(rsync -aAXH --delete)
+# for item in "${EXCLUDES[@]}"; do
+#     RSYNC_CMD+=("--exclude=$item")
+# done
+# if [[ -n "$LINK_DEST" ]]; then
+#     RSYNC_CMD+=("$LINK_DEST")
+# fi
+# RSYNC_CMD+=("$SRC" "$BACKUP_DEST")
+#
+# # Run rsync
+# if "${RSYNC_CMD[@]}" >/dev/null 2>>"$LOGFILE"; then
+#     END_TIME=$(date +%s)
+#     DURATION=$((END_TIME - START_TIME))
+#     echo "[$(date '+%Y-%m-%d_%H-%M-%S')] Backup completed successfully in ${DURATION} seconds" >> "$LOGFILE"
+# else
+#     echo "[$(date '+%Y-%m-%d_%H-%M-%S')] ERROR: Backup failed" >> "$LOGFILE"
+#     exit 4
+# fi
 
-echo "[$DATE] Backup completed successfully" >> "$LOGFILE"
+# ─── CLEANUP OLD BACKUPS ────────────────────────────────────────────────────────
+OLD_BACKUPS_FOUND=$(find "$BACKUP_ROOT" -mindepth 1 -maxdepth 1 -type d -mtime +"$RETENTION_DAYS" | wc -l)
+if [ "$OLD_BACKUPS_FOUND" -gt 0 ]; then
+    find "$BACKUP_ROOT" -mindepth 1 -maxdepth 1 -type d -mtime +"$RETENTION_DAYS" -exec rm -rf {} \;
+    echo "[$(date '+%Y-%m-%d_%H-%M-%S')] Old backups removed (older than $RETENTION_DAYS days)" >> "$LOGFILE"
+else
+    echo "[$(date '+%Y-%m-%d_%H-%M-%S')] No old backups to remove" >> "$LOGFILE"
+fi
+
 exit 0
 
