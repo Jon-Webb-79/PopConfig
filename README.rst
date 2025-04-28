@@ -34,6 +34,6 @@ This project uses a basic MIT license
 Documentation
 =============
 The data in this repository can be used in conjunction with the 
-XXX
+`Read the Docs <https://popconfig.readthedocs.io/en/latest/>`_
 documentation to build your own Arch Linux based operating system.
 
